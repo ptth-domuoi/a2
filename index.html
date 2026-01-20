@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quỹ Khuyến Học Lớp 10A2 - THPT Đỗ Mười</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .progress-stripe {
+            background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+            background-size: 1rem 1rem;
+            animation: progress-stripes 1s linear infinite;
+        }
+        @keyframes progress-stripes {
+            0% { background-position: 1rem 0; }
+            100% { background-position: 0 0; }
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+        
+        /* School Theme Colors Override */
+        .bg-school-primary { background-color: #0f172a; }
+        .gradient-school {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="gradient-school text-white sticky top-0 z-50 shadow-lg border-b border-blue-900/50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <!-- School Logo -->
+                <div class="bg-white p-1 rounded-full shadow-md w-12 h-12 flex items-center justify-center overflow-hidden">
+                    <img src="https://domuoischool.edu.vn/wp-content/uploads/2025/11/Logo-THPT-Do-Muoi-2048x2048.png" 
+                         alt="Logo THPT Đỗ Mười" 
+                         class="w-full h-full object-contain hover:scale-105 transition duration-300">
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl leading-none mb-1 tracking-tight">Quỹ Khuyến Học 10A2</h1>
+                    <p class="text-xs text-blue-200 font-medium uppercase tracking-wider">Trường THPT Đỗ Mười</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div id="connectionStatus" class="hidden md:flex items-center px-2 py-1 bg-black/30 rounded-full text-[10px] font-medium border border-white/10">
+                    <div class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-2 animate-pulse" id="statusDot"></div>
+                    <span id="statusText" class="opacity-80">Connecting...</span>
+                </div>
+                
+                <button id="btnAdminLogin" class="text-xs md:text-sm bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1.5 rounded-lg transition flex items-center backdrop-blur-sm">
+                    <i class="fa-solid fa-lock mr-1.5 text-xs opacity-70"></i> Quản trị
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 space-y-8 max-w-5xl flex-grow">
+
+        <!-- Intro Message -->
+        <div class="bg-white border-l-4 border-red-700 p-5 rounded-r-xl shadow-sm hover:shadow-md transition">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 bg-red-50 p-2 rounded-full">
+                    <i class="fa-solid fa-bullhorn text-red-700 text-lg"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="font-bold text-red-800 text-sm uppercase mb-1">Thông điệp từ Ban Đại Diện</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Chung tay tiếp sức – Vững bước tương lai. Quỹ được thành lập nhằm khích lệ tinh thần, tạo động lực mạnh mẽ để các con bứt phá và gặt hái nhiều thành tích cao trong <span class="font-bold text-red-700">Học kỳ 2</span> này.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Offline Alert -->
+        <div id="offlineAlert" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm animate-fade-in">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-1"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-amber-800">
+                        <span class="font-bold">Chế độ Offline:</span> Không thể kết nối đến máy chủ. Dữ liệu đang hiển thị từ bộ nhớ tạm.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO SECTION: Progress Bar -->
+        <section class="bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden relative group">
+            <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#1e3a8a_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <div class="absolute top-0 right-0 w-80 h-80 bg-blue-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-40 -translate-y-1/2 translate-x-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-80 h-80 bg-red-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-40 translate-y-1/2 -translate-x-1/3"></div>
+
+            <div class="p-6 md:p-10 relative z-10">
+                <div class="text-center mb-10">
+                    <h2 class="text-slate-400 font-bold text-xs uppercase tracking-[0.2em] mb-3">Tổng quỹ hiện tại</h2>
+                    <div class="flex items-center justify-center relative inline-block">
+                        <span id="currentAmountDisplay" class="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-blue-700 drop-shadow-sm tracking-tight">
+                            <i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i>
+                        </span>
+                        <span class="absolute -top-2 -right-6 text-yellow-500 animate-bounce delay-700"><i class="fa-solid fa-star text-xs"></i></span>
+                    </div>
+                     <p id="motivationalText" class="text-sm text-red-600 mt-3 font-medium italic animate-pulse h-6">
+                    </p>
+                </div>
+
+                <div class="relative px-2 pt-8 pb-4 max-w-4xl mx-auto">
+                    <div id="progressBubble" class="absolute top-0 left-0 transform -translate-x-1/2 transition-all duration-1000 ease-out z-30 pointer-events-none">
+                        <div id="bubbleContent" class="bg-red-600 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-lg relative flex items-center transition-colors duration-500 border-2 border-white">
+                            <span id="percentageDisplay">0%</span>
+                            <div id="bubbleArrow" class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-2.5 h-2.5 bg-red-600 rotate-45 transition-colors duration-500 border-r border-b border-white"></div>
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-slate-100 rounded-full h-8 shadow-inner relative overflow-hidden ring-1 ring-slate-200">
+                        <div class="absolute top-0 bottom-0 left-1/3 w-px bg-slate-300/60 z-20 border-r border-white/50 border-dashed"></div>
+                        <div class="absolute top-0 bottom-0 left-2/3 w-px bg-slate-300/60 z-20 border-r border-white/50 border-dashed"></div>
+                        <div id="progressBar" class="h-full rounded-full transition-all duration-1000 relative progress-stripe flex items-center justify-end pr-2 bg-gradient-to-r from-blue-500 to-blue-600" style="width: 0%">
+                            <div class="absolute top-0 left-0 w-full h-1/2 bg-white opacity-20 rounded-t-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-start mt-3 text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wide relative h-6">
+                        <div class="w-1/3 text-left pl-1 border-l-2 border-slate-100">Khởi động</div>
+                        <div class="w-1/3 text-center border-l-2 border-slate-100">Tăng tốc</div>
+                        <div class="w-1/3 text-right pr-1 border-l-2 border-slate-100 border-r-2">Về đích</div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-2 border-t border-slate-100 pt-3">
+                        <div class="text-xs text-slate-400 font-mono">0 ₫</div>
+                        <div class="text-right">
+                            <span class="block text-[10px] text-slate-400 uppercase font-bold text-blue-800">Mục tiêu</span>
+                            <span id="targetAmountDisplay" class="text-slate-700 font-bold text-lg font-mono">...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100 bg-slate-50/50 backdrop-blur-sm">
+                <div class="p-6 text-center group/stat hover:bg-white transition cursor-default">
+                    <div class="text-3xl font-bold text-slate-700 group-hover/stat:text-blue-700 transition" id="donorCount">0</div>
+                    <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mt-1">Lượt ủng hộ</div>
+                </div>
+                <div class="p-6 text-center group/stat hover:bg-white transition cursor-default">
+                    <div class="text-3xl font-bold text-slate-700 group-hover/stat:text-red-600 transition" id="rewardCount">0</div>
+                    <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mt-1">Hạng mục giải</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Login Modal -->
+        <div id="loginModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-2xl p-8 shadow-2xl w-full max-w-sm transform transition-all scale-100 border border-slate-200">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3 text-blue-600">
+                        <i class="fa-solid fa-shield-halved text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800">Đăng nhập Quản trị</h3>
+                    <p class="text-xs text-slate-500 mt-1">Khu vực dành cho Ban đại diện</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <input type="email" id="adminEmailInput" placeholder="Email" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none text-sm transition">
+                    </div>
+                    <div>
+                        <input type="password" id="adminPasswordInput" placeholder="Mật khẩu" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none text-sm transition">
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3 mt-6">
+                    <button id="btnCancelLogin" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 font-medium text-slate-600 text-sm transition">Thoát</button>
+                    <button id="btnSubmitLogin" class="flex-1 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 font-bold text-white shadow-lg shadow-blue-700/20 text-sm transition">
+                        <span id="btnLoginText">Đăng nhập</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel (Secured) -->
+        <section id="adminPanel" class="hidden bg-slate-900 text-slate-200 rounded-2xl p-6 shadow-2xl border border-slate-700 animate-fade-in relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-3 opacity-10">
+                <i class="fa-solid fa-gears text-9xl text-white"></i>
+            </div>
+
+            <div class="flex justify-between items-center mb-8 border-b border-slate-700 pb-4 relative z-10">
+                <div>
+                    <h3 class="font-bold text-xl text-white flex items-center">
+                        <span class="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm"><i class="fa-solid fa-user-shield"></i></span>
+                        Khu vực Quản Trị
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1 ml-11">Đang đăng nhập: <span class="text-blue-400" id="adminEmailDisplay">...</span></p>
+                </div>
+                <button id="btnCloseAdmin" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-red-600 px-4 py-2 rounded-lg text-xs font-bold transition flex items-center">
+                    <i class="fa-solid fa-power-off mr-2"></i> Đăng xuất
+                </button>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 relative z-10">
+                <!-- Column 1: Manage Funds -->
+                <div class="space-y-6">
+                    <h4 class="font-bold text-blue-300 text-sm uppercase tracking-wider mb-4 flex items-center">
+                        <i class="fa-solid fa-wallet mr-2"></i> 1. Quản lý Quỹ
+                    </h4>
+                    
+                    <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 space-y-4">
+                        <div class="flex justify-between items-center">
+                             <label class="text-xs text-slate-400 uppercase font-bold" id="donationFormTitle">Thêm khoản đóng góp</label>
+                             <button id="btnCancelEditDonation" class="hidden text-xs text-red-400 hover:text-red-300 underline font-medium">Hủy sửa</button>
+                        </div>
+                        <input type="text" id="adminName" placeholder="Tên Phụ Huynh/Học Sinh" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none text-white text-sm">
+                        <input type="number" id="adminAmount" placeholder="Số tiền (VNĐ)" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none text-white text-sm">
+                        <input type="text" id="adminNote" placeholder="Ghi chú (tùy chọn)" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none text-white text-sm">
+                        <button id="btnAddDonation" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition shadow-lg flex justify-center items-center text-sm">
+                            <i class="fa-solid fa-plus-circle mr-2"></i> Thêm vào Quỹ
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 space-y-4">
+                        <label class="text-xs text-slate-400 uppercase font-bold">Sửa mục tiêu (Tổng tiền dự kiến)</label>
+                        <div class="flex space-x-2">
+                            <input type="number" id="adminTarget" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 text-white text-sm">
+                            <button id="btnUpdateTarget" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 rounded-lg transition text-sm whitespace-nowrap border border-slate-600">
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Manage Rewards -->
+                <div class="space-y-6 md:border-l md:border-slate-700 md:pl-8">
+                    <h4 class="font-bold text-amber-300 text-sm uppercase tracking-wider mb-4 flex items-center">
+                        <i class="fa-solid fa-gift mr-2"></i> 2. Cấu hình Giải thưởng
+                    </h4>
+                    
+                    <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 space-y-4">
+                        <div class="flex justify-between items-center">
+                             <label class="text-xs text-slate-400 uppercase font-bold" id="rewardFormTitle">Định Nghĩa Giải Mới</label>
+                             <button id="btnCancelEditReward" class="hidden text-xs text-red-400 hover:text-red-300 underline font-medium">Hủy sửa</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                             <input type="text" id="rewardTitle" placeholder="Tên giải" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 focus:border-amber-500 outline-none text-white text-sm">
+                             <input type="number" id="rewardAmount" placeholder="Mức tiền" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 focus:border-amber-500 outline-none text-white text-sm">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="rewardSub" placeholder="Mô tả phụ" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-600 focus:border-amber-500 outline-none text-white text-sm">
+                            <select id="rewardIcon" class="w-full bg-slate-900 border border-slate-600 rounded-lg text-white text-sm p-3 outline-none">
+                                <option value="fa-medal">Huy chương</option>
+                                <option value="fa-star">Ngôi sao</option>
+                                <option value="fa-crown">Vương miện</option>
+                                <option value="fa-award">Cúp</option>
+                                <option value="fa-gift">Hộp quà</option>
+                            </select>
+                        </div>
+                        
+                        <button id="btnAddReward" class="w-full mt-2 bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg transition shadow-lg text-sm flex items-center justify-center">
+                            <i class="fa-solid fa-trophy mr-2"></i> Lưu Cấu Hình
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="text-xs text-slate-400 uppercase font-bold mb-3 block">Dự Toán Ngân Sách</label>
+                        <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                            <div class="max-h-56 overflow-y-auto custom-scrollbar" id="adminRewardsList">
+                                <div class="text-xs text-slate-500 p-6 text-center italic">Chưa có dữ liệu</div>
+                            </div>
+                            
+                            <div id="adminBudgetSummary" class="p-4 bg-black/20 border-t border-slate-700 flex justify-between items-center hidden">
+                                <span class="text-xs text-slate-400 uppercase font-bold">Tổng dự chi</span>
+                                <span class="text-lg font-bold text-amber-400" id="totalBudgetDisplay">0 ₫</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Contact Config with Bank QR Support -->
+            <div class="mt-10 pt-8 border-t border-slate-700 relative z-10">
+                <h4 class="font-bold text-slate-300 mb-6 text-sm uppercase tracking-wider flex items-center"><i class="fa-solid fa-address-card mr-2"></i> 3. Thông tin Liên hệ & Ngân hàng</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Tên Trưởng Ban</label>
+                            <input type="text" id="adminContactName" class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-600 focus:border-green-500 outline-none text-white text-sm">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Số điện thoại</label>
+                            <input type="text" id="adminContactPhone" class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-600 focus:border-green-500 outline-none text-white text-sm">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Email</label>
+                            <input type="text" id="adminContactEmail" class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-600 focus:border-green-500 outline-none text-white text-sm">
+                        </div>
+                    </div>
+                    
+                    <!-- Bank Settings for QR -->
+                    <div class="space-y-4 border-l border-slate-700 pl-4">
+                        <h5 class="text-xs font-bold text-blue-400 uppercase mb-2">Cấu hình VietQR (Tự động tạo mã)</h5>
+                        <div>
+                            <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Ngân hàng</label>
+                            <select id="adminBankId" class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-600 focus:border-green-500 outline-none text-white text-sm">
+                                <option value="MB">MB Bank</option>
+                                <option value="VCB">Vietcombank</option>
+                                <option value="TCB">Techcombank</option>
+                                <option value="VPB">VPBank</option>
+                                <option value="ACB">ACB</option>
+                                <option value="BIDV">BIDV</option>
+                                <option value="ICB">VietinBank</option>
+                                <option value="TPB">TPBank</option>
+                                <option value="MSB">MSB</option>
+                                <option value="OCB">OCB</option>
+                                <option value="VIB">VIB</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Số tài khoản</label>
+                            <input type="text" id="adminBankAccount" placeholder="Ví dụ: 123456789" class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-600 focus:border-green-500 outline-none text-white text-sm font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Chủ tài khoản (Viết hoa không dấu)</label>
+                            <input type="text" id="adminBankOwner" placeholder="NGUYEN VAN A" class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-600 focus:border-green-500 outline-none text-white text-sm uppercase">
+                        </div>
+                    </div>
+                    
+                    <div class="md:col-span-2 text-right mt-2">
+                        <button id="btnSaveContact" class="bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 px-8 rounded-lg transition shadow-lg text-sm">
+                            <i class="fa-solid fa-floppy-disk mr-2"></i> Lưu Thông Tin & Tạo QR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            
+            <!-- Left Column: Donors List -->
+            <div class="space-y-6">
+                <!-- Latest Donors -->
+                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-full flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
+                    
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center">
+                            <span class="bg-blue-50 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm border border-blue-100">
+                                <i class="fa-solid fa-heart-circle-plus text-lg"></i>
+                            </span>
+                            Danh Sách Ủng Hộ
+                        </h3>
+                        <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-full uppercase tracking-wider">Mới nhất</span>
+                    </div>
+
+                    <div class="overflow-x-auto flex-grow">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-xs text-slate-400 border-b border-slate-100 font-semibold uppercase tracking-wide">
+                                    <th class="py-3 pl-2">Ngày</th>
+                                    <th class="py-3">Phụ Huynh / Học Sinh</th>
+                                    <th class="py-3 text-right pr-2">Số tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="donationList" class="text-sm">
+                                <tr>
+                                    <td colspan="3" class="text-center py-8 text-slate-400">
+                                        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tải dữ liệu...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- NEW: Load More Controls -->
+                    <div id="donationControls" class="mt-4 text-center border-t border-slate-100 pt-4 hidden">
+                        <button id="btnLoadMore" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition py-2 px-6 rounded-full bg-blue-50 hover:bg-blue-100 w-full md:w-auto">
+                            <i class="fa-solid fa-chevron-down mr-2"></i> Xem thêm
+                        </button>
+                        <button id="btnCollapse" class="text-xs font-bold text-slate-500 hover:text-slate-700 transition py-2 px-6 rounded-full bg-slate-100 hover:bg-slate-200 w-full md:w-auto hidden ml-2">
+                            <i class="fa-solid fa-chevron-up mr-2"></i> Thu gọn
+                        </button>
+                    </div>
+
+                    <div id="emptyState" class="hidden text-center py-12 text-slate-300">
+                        <i class="fa-solid fa-box-open text-5xl mb-3 opacity-50"></i>
+                        <p class="text-sm">Chưa có dữ liệu đóng góp nào.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Rewards Structure -->
+            <div class="space-y-6">
+                <section class="bg-gradient-to-br from-white to-slate-50 rounded-2xl shadow-sm border border-slate-200 p-6 h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-red-600"></div>
+                    
+                    <h3 class="font-bold text-lg text-slate-800 mb-6 flex items-center">
+                         <span class="bg-red-50 text-red-600 w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm border border-red-100">
+                            <i class="fa-solid fa-award text-lg"></i>
+                        </span>
+                        Cơ Cấu Giải Thưởng
+                    </h3>
+                    
+                    <div id="rewardsContainer" class="space-y-4">
+                        <!-- Rewards will be injected here by JS -->
+                        <div class="text-center py-8 text-slate-400 text-sm">Đang tải danh sách thưởng...</div>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-200/60">
+                        <p class="text-xs text-center text-slate-400 italic">
+                            * Mức thưởng dự kiến có thể điều chỉnh dựa trên tình hình thực tế.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PROFESSIONAL FOOTER: School Theme -->
+    <footer class="bg-[#0f172a] text-slate-400 mt-12 pt-16 pb-24 md:pb-8 border-t border-slate-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-10">
+                
+                <!-- Col 1: Brand -->
+                <div class="space-y-5">
+                    <div class="flex items-center space-x-4 text-white">
+                        <div class="bg-white p-1 rounded-full w-14 h-14 flex items-center justify-center">
+                            <img src="https://domuoischool.edu.vn/wp-content/uploads/2025/11/Logo-THPT-Do-Muoi-2048x2048.png" alt="Logo Footer" class="w-full h-full object-contain">
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg leading-tight uppercase tracking-wide">Quỹ Khuyến Học<br>Lớp 10A2</h4>
+                            <p class="text-xs text-blue-400 mt-1 font-medium">Trường THPT Đỗ Mười</p>
+                        </div>
+                    </div>
+                    <p class="text-sm leading-relaxed text-slate-400 border-l-2 border-slate-700 pl-4">
+                        Nơi ươm mầm tài năng và khích lệ tinh thần học tập cho các em học sinh. Sự đồng hành của Quý phụ huynh là nền tảng cho sự phát triển của lớp.
+                    </p>
+                </div>
+
+                <!-- Col 2: Contact Dynamic -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-[0.15em] border-b border-blue-900/50 pb-3 inline-block text-blue-400">Liên Hệ Ban Đại Diện</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start group">
+                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-blue-900 transition text-blue-500">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] text-slate-500 uppercase font-bold mb-0.5">Trưởng Ban</span>
+                                <span class="text-slate-200 font-medium tracking-wide" id="contactNameDisplay">...</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start group">
+                             <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-blue-900 transition text-blue-500">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] text-slate-500 uppercase font-bold mb-0.5">Hotline</span>
+                                <span class="text-slate-200 font-medium tracking-wide font-mono" id="contactPhoneDisplay">...</span>
+                            </div>
+                        </li>
+                         <li class="flex items-start group">
+                             <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-blue-900 transition text-blue-500">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] text-slate-500 uppercase font-bold mb-0.5">Email</span>
+                                <span class="text-slate-200 font-medium tracking-wide" id="contactEmailDisplay">...</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Banking & QR -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-[0.15em] border-b border-blue-900/50 pb-3 inline-block text-blue-400">Thông Tin Chuyển Khoản</h4>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <!-- Left: Info -->
+                        <div class="flex-1 space-y-3">
+                            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-1">Ngân hàng</div>
+                                <div class="text-white font-bold flex items-center">
+                                     <i class="fa-solid fa-building-columns text-amber-500 mr-2"></i>
+                                     <span id="bankNameDisplay">MB Bank</span>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-1">Số tài khoản</div>
+                                <div class="text-xl text-blue-300 font-mono font-bold tracking-wider" id="bankAccountDisplay">...</div>
+                                <div class="text-xs text-slate-400 mt-1 uppercase" id="bankOwnerDisplay">...</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: QR Code -->
+                        <div class="bg-white p-2 rounded-xl w-32 h-32 flex-shrink-0 mx-auto sm:mx-0 shadow-lg">
+                            <img id="qrCodeImage" src="" alt="VietQR" class="w-full h-full object-contain rounded-lg">
+                        </div>
+                    </div>
+                     <p class="text-[10px] text-slate-500 uppercase font-semibold mt-4 text-center sm:text-left">
+                        * Quét mã để tự động nhập thông tin
+                    </p>
+                </div>
+            </div>
+
+            <!-- Copyright Line -->
+            <div class="border-t border-slate-800 pt-8 text-center">
+                 <p class="text-xs text-slate-500">&copy; 2024 Ban Phụ Huynh Lớp 10A2 - THPT Đỗ Mười.</p>
+                 <p class="text-[10px] text-slate-600 mt-1 uppercase tracking-wider">Vì tương lai con em chúng ta</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Footer Mobile Navigation -->
+    <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-200 p-2 md:hidden z-40 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] pb-safe">
+        <div class="grid grid-cols-3 text-[10px] font-bold text-slate-400">
+            <div class="flex flex-col items-center justify-center p-2 text-blue-700">
+                <i class="fa-solid fa-home text-lg mb-1"></i>
+                <span>Trang chủ</span>
+            </div>
+            <div class="flex flex-col items-center justify-center p-2 hover:text-blue-600 transition" onclick="alert('Tính năng đang phát triển!')">
+                <i class="fa-solid fa-newspaper text-lg mb-1"></i>
+                <span>Tin tức</span>
+            </div>
+             <div class="flex flex-col items-center justify-center p-2 hover:text-blue-600 transition" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">
+                <i class="fa-solid fa-circle-info text-lg mb-1"></i>
+                <span>Liên hệ</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, orderBy, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4eoXbvn0-OrH3tIH3cg4XA90sHXfWv4Y",
+            authDomain: "khuyen-26eae.firebaseapp.com",
+            projectId: "khuyen-26eae",
+            storageBucket: "khuyen-26eae.firebasestorage.app",
+            messagingSenderId: "1086086908949",
+            appId: "1:1086086908949:web:541af14c5d43dee2d3521c"
+        };
+
+        // VARIABLES
+        let app, db, auth;
+        let isOfflineMode = false;
+        let currentUser = null; // Store user state
+        let editingRewardId = null; // Track item being edited
+        let editingDonationId = null; // Track donation being edited
+        let visibleDonationsCount = 5; // Default visible items
+
+        // DATA STATE
+        let appData = {
+            target: 50000000, 
+            donations: [],
+            rewards: [],
+            contact: {
+                name: "Bác Trưởng Ban",
+                phone: "098x.xxx.xxx",
+                email: "banphuhuynh10a2@gmail.com",
+                // Split bank info for QR
+                bankId: "MB",
+                accountNo: "123456789999",
+                accountName: "QUY LOP 10A2"
+            }
+        };
+        
+        // DEFAULTS
+        const DEFAULT_REWARDS = [
+            { id: 'def1', title: "HS Xuất Sắc", sub: "Học kỳ 1 & 2", amount: 500000, quantity: 5, icon: "fa-medal", color: "red" },
+            { id: 'def2', title: "HS Giỏi", sub: "Tổng kết năm", amount: 300000, quantity: 10, icon: "fa-star", color: "blue" },
+            { id: 'def3', title: "Giải Nhất HSG", sub: "Cấp Tỉnh/TP", amount: 1000000, quantity: 2, icon: "fa-crown", color: "amber" },
+            { id: 'def4', title: "Giải KK HSG", sub: "Khuyến khích", amount: 200000, quantity: 5, icon: "fa-award", color: "purple" }
+        ];
+
+        // --- Utility Functions ---
+        const formatMoney = (amount) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        const formatDate = (dateString) => {
+            if(!dateString) return "";
+            const date = new Date(dateString);
+            return `${date.getDate()}/${date.getMonth() + 1}`;
+        };
+        const getBankName = (code) => {
+            const banks = {
+                'MB': 'MB Bank', 'VCB': 'Vietcombank', 'TCB': 'Techcombank', 'VPB': 'VPBank',
+                'ACB': 'ACB', 'BIDV': 'BIDV', 'ICB': 'VietinBank', 'TPB': 'TPBank', 'MSB': 'MSB', 'OCB': 'OCB', 'VIB': 'VIB'
+            };
+            return banks[code] || code;
+        };
+
+        // --- Render UI ---
+        function renderApp() {
+            // 1. Calculations
+            const totalRaised = appData.donations.reduce((sum, item) => sum + Number(item.amount), 0);
+            const percentage = appData.target > 0 ? Math.min(100, Math.round((totalRaised / appData.target) * 100)) : 0;
+
+            // 2. Hero Section Update
+            document.getElementById('currentAmountDisplay').innerText = formatMoney(totalRaised);
+            document.getElementById('targetAmountDisplay').innerText = formatMoney(appData.target);
+            document.getElementById('percentageDisplay').innerText = `${percentage}%`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            
+            // Move Bubble
+            const bubble = document.getElementById('progressBubble');
+            bubble.style.left = `${percentage}%`;
+
+            document.getElementById('donorCount').innerText = appData.donations.length;
+            document.getElementById('rewardCount').innerText = appData.rewards.length;
+
+            const progressBar = document.getElementById('progressBar');
+            const motivationalText = document.getElementById('motivationalText');
+            
+            // --- 3-STAGE COLOR LOGIC (Theme Adjusted) ---
+            progressBar.className = "h-full rounded-full transition-all duration-1000 relative progress-stripe flex items-center justify-end pr-2 bg-gradient-to-r";
+            
+            const bubbleContent = document.getElementById('bubbleContent');
+            const bubbleArrow = document.getElementById('bubbleArrow');
+            
+            if (percentage < 33) {
+                progressBar.classList.add('from-yellow-400', 'to-amber-500');
+                bubbleContent.className = "bg-amber-500 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-lg relative flex items-center transition-colors duration-500 border-2 border-white";
+                bubbleArrow.className = "absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-2.5 h-2.5 bg-amber-500 rotate-45 transition-colors duration-500 border-r border-b border-white";
+                motivationalText.innerText = "Khởi động mạnh mẽ nào!";
+                motivationalText.className = "text-sm text-amber-600 mt-3 font-medium italic animate-pulse h-6";
+            } else if (percentage < 67) {
+                progressBar.classList.add('from-orange-400', 'to-red-500');
+                bubbleContent.className = "bg-red-500 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-lg relative flex items-center transition-colors duration-500 border-2 border-white";
+                bubbleArrow.className = "absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-2.5 h-2.5 bg-red-500 rotate-45 transition-colors duration-500 border-r border-b border-white";
+                motivationalText.innerText = "Tuyệt vời! Đang tăng tốc!";
+                motivationalText.className = "text-sm text-red-600 mt-3 font-medium italic animate-pulse h-6";
+            } else {
+                progressBar.classList.add('from-blue-400', 'to-blue-600'); 
+                bubbleContent.className = "bg-blue-600 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-lg relative flex items-center transition-colors duration-500 border-2 border-white";
+                bubbleArrow.className = "absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-2.5 h-2.5 bg-blue-600 rotate-45 transition-colors duration-500 border-r border-b border-white";
+                if (percentage >= 100) {
+                     motivationalText.innerText = "Xuất sắc! Đã đạt mục tiêu!";
+                } else {
+                     const remaining = Math.max(0, appData.target - totalRaised);
+                     motivationalText.innerText = `Sắp về đích! Còn thiếu ${formatMoney(remaining)}`;
+                }
+                motivationalText.className = "text-sm text-blue-700 mt-3 font-medium italic animate-pulse h-6";
+            }
+
+            // 3. Render Donation List (With Load More Logic)
+            const listContainer = document.getElementById('donationList');
+            const emptyState = document.getElementById('emptyState');
+            const donationControls = document.getElementById('donationControls');
+            const btnLoadMore = document.getElementById('btnLoadMore');
+            const btnCollapse = document.getElementById('btnCollapse');
+
+            listContainer.innerHTML = '';
+
+            if (appData.donations.length === 0) {
+                emptyState.classList.remove('hidden');
+                donationControls.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                
+                const itemsToShow = appData.donations.slice(0, visibleDonationsCount);
+                
+                itemsToShow.forEach(donation => {
+                    let adminControls = '';
+                    if (currentUser && !currentUser.isAnonymous) {
+                        adminControls = `
+                            <div class="flex justify-end gap-3 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="window.editDonation('${donation.id}')" class="text-blue-500 hover:text-blue-700 text-xs bg-blue-50 p-1.5 rounded" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="window.deleteDonation('${donation.id}')" class="text-red-500 hover:text-red-700 text-xs bg-red-50 p-1.5 rounded" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                    }
+
+                    const row = document.createElement('tr');
+                    row.className = "border-b border-slate-50 hover:bg-slate-50 transition group";
+                    row.innerHTML = `
+                        <td class="py-4 pl-2 text-slate-400 font-mono text-xs whitespace-nowrap align-top pt-5">${formatDate(donation.date)}</td>
+                        <td class="py-4 align-top">
+                            <div class="font-bold text-slate-700 text-sm">${donation.name}</div>
+                            ${donation.note ? `<div class="text-xs text-slate-500 italic mt-1 bg-slate-100 inline-block px-2 py-0.5 rounded">"${donation.note}"</div>` : ''}
+                        </td>
+                        <td class="py-4 text-right pr-2 align-top">
+                            <div class="font-bold text-blue-700 text-sm">${formatMoney(donation.amount)}</div>
+                            ${adminControls}
+                        </td>
+                    `;
+                    listContainer.appendChild(row);
+                });
+
+                if (appData.donations.length > 5) {
+                    donationControls.classList.remove('hidden');
+                    if (visibleDonationsCount < appData.donations.length) {
+                        const remaining = appData.donations.length - visibleDonationsCount;
+                        btnLoadMore.innerHTML = `<i class="fa-solid fa-chevron-down mr-2"></i> Xem thêm (${remaining})`;
+                        btnLoadMore.classList.remove('hidden');
+                    } else {
+                        btnLoadMore.classList.add('hidden');
+                    }
+                    if (visibleDonationsCount > 5) {
+                        btnCollapse.classList.remove('hidden');
+                    } else {
+                        btnCollapse.classList.add('hidden');
+                    }
+                } else {
+                    donationControls.classList.add('hidden');
+                }
+            }
+
+            // 4. Render Rewards List
+            const rewardsContainer = document.getElementById('rewardsContainer');
+            rewardsContainer.innerHTML = '';
+            
+            const colorMap = {
+                'fa-medal': 'text-red-600 bg-red-50 border-red-100',
+                'fa-star': 'text-blue-600 bg-blue-50 border-blue-100',
+                'fa-crown': 'text-amber-600 bg-amber-50 border-amber-100',
+                'fa-award': 'text-purple-600 bg-purple-50 border-purple-100',
+                'fa-gift': 'text-emerald-600 bg-emerald-50 border-emerald-100'
+            };
+
+            appData.rewards.forEach(reward => {
+                const styleClass = colorMap[reward.icon] || 'text-slate-600 bg-slate-50 border-slate-100';
+                
+                const el = document.createElement('div');
+                el.className = "bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between card-hover group";
+                el.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full ${styleClass} border flex items-center justify-center mr-4 shadow-sm group-hover:scale-110 transition duration-300">
+                            <i class="fa-solid ${reward.icon} text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-700 text-sm group-hover:text-blue-700 transition">${reward.title}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">${reward.sub}</p>
+                        </div>
+                    </div>
+                    <span class="font-bold text-red-600 text-sm bg-red-50 px-2 py-1 rounded border border-red-100">${formatMoney(reward.amount)}</span>
+                `;
+                rewardsContainer.appendChild(el);
+            });
+
+            // 5. Render Contact Info (Footer & QR)
+            if (appData.contact) {
+                const contactName = document.getElementById('contactNameDisplay');
+                const contactPhone = document.getElementById('contactPhoneDisplay');
+                const contactEmail = document.getElementById('contactEmailDisplay');
+                
+                // Banking Display
+                const bankNameDisplay = document.getElementById('bankNameDisplay');
+                const bankAccountDisplay = document.getElementById('bankAccountDisplay');
+                const bankOwnerDisplay = document.getElementById('bankOwnerDisplay');
+                const qrCodeImage = document.getElementById('qrCodeImage');
+
+                if(contactName) contactName.innerText = appData.contact.name || '...';
+                if(contactPhone) contactPhone.innerText = appData.contact.phone || '...';
+                if(contactEmail) contactEmail.innerText = appData.contact.email || '...';
+                
+                // Handle Bank Details & QR
+                const bankId = appData.contact.bankId || 'MB';
+                const accountNo = appData.contact.accountNo || '';
+                const owner = appData.contact.accountName || '';
+
+                if(bankNameDisplay) bankNameDisplay.innerText = getBankName(bankId);
+                if(bankAccountDisplay) bankAccountDisplay.innerText = accountNo || '...';
+                if(bankOwnerDisplay) bankOwnerDisplay.innerText = owner;
+
+                // VietQR Generation
+                if (bankId && accountNo) {
+                    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.png?amount=0&addInfo=Quy%20Lop%2010A2&accountName=${encodeURIComponent(owner)}`;
+                    if(qrCodeImage) qrCodeImage.src = qrUrl;
+                }
+            }
+
+            // 6. Admin Panel Sync (Only if authenticated properly)
+            if (currentUser && !currentUser.isAnonymous) {
+                document.getElementById('adminTarget').value = appData.target;
+                
+                if (appData.contact) {
+                    document.getElementById('adminContactName').value = appData.contact.name || '';
+                    document.getElementById('adminContactPhone').value = appData.contact.phone || '';
+                    document.getElementById('adminContactEmail').value = appData.contact.email || '';
+                    
+                    // Bank Fields
+                    document.getElementById('adminBankId').value = appData.contact.bankId || 'MB';
+                    document.getElementById('adminBankAccount').value = appData.contact.accountNo || '';
+                    document.getElementById('adminBankOwner').value = appData.contact.accountName || '';
+                }
+                
+                renderAdminRewardsList();
+            }
+        }
+
+        // --- Render Admin Specifics (Budget Table) ---
+        function renderAdminRewardsList() {
+            const container = document.getElementById('adminRewardsList');
+            const totalBudgetDisplay = document.getElementById('totalBudgetDisplay');
+            const budgetContainer = document.getElementById('adminBudgetSummary');
+            
+            // Clear old content
+            container.innerHTML = '';
+            
+            // Create Table
+            const table = document.createElement('table');
+            table.className = "w-full text-xs text-left border-collapse";
+            
+            // Table Header
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr class="text-slate-500 border-b border-slate-700 sticky top-0 bg-slate-900 z-10 font-bold uppercase tracking-wider">
+                    <th class="py-3 pl-4">Giải thưởng</th>
+                    <th class="py-3 text-right">Mức thưởng</th>
+                    <th class="py-3 text-center w-16">SL</th>
+                    <th class="py-3 text-right pr-4">Tổng</th>
+                    <th class="py-3 w-10"></th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            let totalBudget = 0;
+
+            appData.rewards.forEach(reward => {
+                const qty = reward.quantity || 0;
+                const subTotal = reward.amount * qty;
+                totalBudget += subTotal;
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800 hover:bg-slate-800/50 group transition";
+                tr.innerHTML = `
+                    <td class="py-3 pl-4 font-medium text-amber-400 max-w-[100px] truncate" title="${reward.title}">${reward.title}</td>
+                    <td class="py-3 text-right text-slate-300">${formatMoney(reward.amount).replace('₫','')}</td>
+                    <td class="py-3 text-center">
+                        <input type="number" min="0" value="${qty}" 
+                            class="w-10 bg-slate-800 border border-slate-600 rounded px-1 text-center text-white focus:border-blue-500 focus:bg-slate-700 outline-none transition text-xs py-1"
+                            onchange="window.updateRewardQuantity('${reward.id}', this.value)"
+                        >
+                    </td>
+                    <td class="py-3 text-right font-mono text-slate-200 pr-4">${formatMoney(subTotal).replace('₫','')}</td>
+                    <td class="py-3 text-right pr-2">
+                        <div class="flex justify-end opacity-40 group-hover:opacity-100 transition">
+                            <button class="text-blue-400 hover:text-blue-300 mr-2" onclick="window.editReward('${reward.id}')" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                            <button class="text-red-400 hover:text-red-300" onclick="window.deleteReward('${reward.id}')" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            container.appendChild(table);
+
+            if (appData.rewards.length > 0) {
+                budgetContainer.classList.remove('hidden');
+                totalBudgetDisplay.innerText = formatMoney(totalBudget);
+                
+                if (totalBudget > appData.target) {
+                    totalBudgetDisplay.classList.add('text-red-400');
+                    totalBudgetDisplay.classList.remove('text-amber-400');
+                } else {
+                    totalBudgetDisplay.classList.remove('text-red-400');
+                    totalBudgetDisplay.classList.add('text-amber-400');
+                }
+            } else {
+                budgetContainer.classList.add('hidden');
+            }
+        }
+
+        // --- GLOBAL FUNCTIONS ---
+        
+        window.updateRewardQuantity = async (id, val) => {
+            const newQty = parseInt(val);
+            if(isNaN(newQty) || newQty < 0) return;
+            if (isOfflineMode) {
+                 const index = appData.rewards.findIndex(r => r.id === id);
+                 if (index !== -1) {
+                     appData.rewards[index].quantity = newQty;
+                     saveOffline();
+                 }
+            } else {
+                 try { await updateDoc(doc(db, "rewards", id), { quantity: newQty }); } catch(e) { alert(e.message); }
+            }
+        };
+
+        // UI Listeners for Load More
+        document.getElementById('btnLoadMore').onclick = () => {
+            visibleDonationsCount += 5; // Show 5 more
+            renderApp();
+        };
+
+        document.getElementById('btnCollapse').onclick = () => {
+            visibleDonationsCount = 5; // Reset to default
+            renderApp();
+            document.getElementById('donationList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        // --- INIT & FIREBASE ---
+        async function initApp() {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        document.getElementById('statusDot').classList.remove('bg-gray-400', 'bg-yellow-500', 'animate-pulse');
+                        document.getElementById('statusDot').classList.add('bg-green-500');
+                        document.getElementById('statusText').innerText = "Online";
+                        document.getElementById('statusText').classList.add('text-green-300');
+                        
+                        // Handle Admin UI
+                        if (!user.isAnonymous) {
+                            document.getElementById('btnAdminLogin').innerHTML = '<i class="fa-solid fa-user-check mr-1.5"></i> ' + user.email.split('@')[0];
+                            document.getElementById('btnAdminLogin').classList.add('bg-green-500/20', 'border-green-400/30', 'text-green-100');
+                            document.getElementById('adminPanel').classList.remove('hidden');
+                            document.getElementById('adminEmailDisplay').innerText = user.email;
+                            document.getElementById('adminTarget').value = appData.target;
+                            
+                            // Load fields for contact
+                             if (appData.contact) {
+                                document.getElementById('adminContactName').value = appData.contact.name || '';
+                                document.getElementById('adminContactPhone').value = appData.contact.phone || '';
+                                document.getElementById('adminContactEmail').value = appData.contact.email || '';
+                                
+                                document.getElementById('adminBankId').value = appData.contact.bankId || 'MB';
+                                document.getElementById('adminBankAccount').value = appData.contact.accountNo || '';
+                                document.getElementById('adminBankOwner').value = appData.contact.accountName || '';
+                            }
+
+                            renderAdminRewardsList();
+                        } else {
+                            document.getElementById('btnAdminLogin').innerHTML = '<i class="fa-solid fa-lock mr-1.5"></i> Quản trị';
+                            document.getElementById('btnAdminLogin').classList.remove('bg-green-500/20', 'border-green-400/30', 'text-green-100');
+                            document.getElementById('adminPanel').classList.add('hidden');
+                        }
+                        renderApp();
+                    } else {
+                        signInAnonymously(auth).catch(e => console.error("Anon Login Failed", e));
+                    }
+                });
+                setupFirebaseListeners();
+            } catch (error) {
+                console.error("Init Failed:", error);
+                enableOfflineMode();
+            }
+        }
+
+        function setupFirebaseListeners() {
+            onSnapshot(doc(db, "settings", "general"), (docSnap) => {
+                if (docSnap.exists()) {
+                    appData.target = docSnap.data().target || 50000000;
+                    renderApp();
+                }
+            });
+
+             onSnapshot(doc(db, "settings", "contact"), (docSnap) => {
+                if (docSnap.exists()) {
+                    appData.contact = docSnap.data();
+                    renderApp();
+                }
+            });
+
+            const qDonations = query(collection(db, "donations"), orderBy("createdAt", "desc"));
+            onSnapshot(qDonations, (snap) => {
+                const arr = [];
+                snap.forEach(d => arr.push({ id: d.id, ...d.data() })); 
+                appData.donations = arr;
+                renderApp();
+            });
+
+            const qRewards = query(collection(db, "rewards"), orderBy("amount", "desc"));
+            onSnapshot(qRewards, (snap) => {
+                const arr = [];
+                snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+                appData.rewards = arr;
+                renderApp();
+                if(currentUser && !currentUser.isAnonymous) renderAdminRewardsList();
+            });
+        }
+
+        function enableOfflineMode() {
+            isOfflineMode = true;
+            document.getElementById('offlineAlert').classList.remove('hidden');
+            const stored = localStorage.getItem('fundData_Offline_V2');
+            if (stored) {
+                appData = JSON.parse(stored);
+            } else {
+                appData.rewards = [...DEFAULT_REWARDS];
+            }
+            renderApp();
+        }
+
+        function saveOffline() {
+            if(isOfflineMode) {
+                localStorage.setItem('fundData_Offline_V2', JSON.stringify(appData));
+                renderApp();
+            }
+        }
+
+        // --- UI HANDLERS ---
+        document.getElementById('btnAdminLogin').onclick = () => {
+            if (currentUser && !currentUser.isAnonymous) {
+                document.getElementById('adminPanel').classList.toggle('hidden');
+            } else {
+                document.getElementById('loginModal').classList.remove('hidden');
+                document.getElementById('adminEmailInput').focus();
+            }
+        };
+
+        document.getElementById('btnCancelLogin').onclick = () => {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+        };
+
+        document.getElementById('btnSubmitLogin').onclick = async () => {
+            const email = document.getElementById('adminEmailInput').value.trim();
+            const pass = document.getElementById('adminPasswordInput').value;
+            const btn = document.getElementById('btnSubmitLogin');
+            const btnText = document.getElementById('btnLoginText');
+            if (!email || !pass) return alert("Vui lòng nhập Email và Mật khẩu!");
+            btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('adminPasswordInput').value = '';
+            } catch (error) {
+                alert("Đăng nhập thất bại: " + error.message);
+            } finally {
+                btnText.innerHTML = 'Đăng nhập';
+                btn.disabled = false;
+            }
+        };
+
+        document.getElementById('btnCloseAdmin').onclick = async () => {
+            try { await signOut(auth); } catch (error) { console.error(error); }
+        };
+
+        // --- DATA ACTION HANDLERS ---
+        
+        // 0. Update Contact (Updated for QR)
+        document.getElementById('btnSaveContact').onclick = async () => {
+            const name = document.getElementById('adminContactName').value.trim();
+            const phone = document.getElementById('adminContactPhone').value.trim();
+            const email = document.getElementById('adminContactEmail').value.trim();
+            
+            const bankId = document.getElementById('adminBankId').value;
+            const accountNo = document.getElementById('adminBankAccount').value.trim();
+            const accountName = document.getElementById('adminBankOwner').value.trim().toUpperCase();
+            
+            const contactData = { name, phone, email, bankId, accountNo, accountName };
+            
+            if(isOfflineMode) {
+                appData.contact = contactData;
+                saveOffline();
+                alert("Đã lưu thông tin liên hệ (Offline)!");
+            } else {
+                try {
+                    await setDoc(doc(db, "settings", "contact"), contactData);
+                    alert("Đã cập nhật thông tin liên hệ & Mã QR!");
+                } catch(e) {
+                    alert("Lỗi quyền Admin: " + e.message);
+                }
+            }
+        };
+
+        // 1. Add/Update Donation
+        document.getElementById('btnAddDonation').onclick = async () => {
+            const name = document.getElementById('adminName').value.trim();
+            const amount = parseInt(document.getElementById('adminAmount').value);
+            const note = document.getElementById('adminNote').value.trim();
+
+            if (!name || !amount) return alert("Thiếu thông tin!");
+            
+            const btn = document.getElementById('btnAddDonation');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            
+            const itemData = { name, amount, note };
+
+            if (editingDonationId) {
+                if(isOfflineMode) {
+                    const idx = appData.donations.findIndex(d => d.id === editingDonationId);
+                    if(idx !== -1) {
+                         appData.donations[idx] = { ...appData.donations[idx], ...itemData };
+                         saveOffline();
+                    }
+                } else {
+                    try { await updateDoc(doc(db, "donations", editingDonationId), itemData); }
+                    catch(e) { alert("Lỗi: " + e.message); }
+                }
+                alert("Đã cập nhật!");
+                cancelEditDonation();
+            } else {
+                const newItem = { ...itemData, date: new Date().toISOString(), createdAt: Date.now() };
+                if(isOfflineMode) {
+                    appData.donations.unshift({ id: Date.now().toString(), ...newItem });
+                    saveOffline();
+                } else {
+                    try { await addDoc(collection(db, "donations"), newItem); }
+                    catch(e) { alert("Lỗi: " + e.message); }
+                }
+                document.getElementById('adminName').value = '';
+                document.getElementById('adminAmount').value = '';
+                document.getElementById('adminNote').value = '';
+                alert("Đã thêm mới!");
+            }
+            btn.innerHTML = '<i class="fa-solid fa-plus-circle mr-2"></i> Thêm vào Quỹ';
+        };
+
+        window.editDonation = (id) => {
+            const d = appData.donations.find(i => i.id === id);
+            if(!d) return;
+            editingDonationId = id;
+            document.getElementById('adminName').value = d.name;
+            document.getElementById('adminAmount').value = d.amount;
+            document.getElementById('adminNote').value = d.note || '';
+            
+            document.getElementById('donationFormTitle').innerText = "Sửa: " + d.name;
+            document.getElementById('donationFormTitle').classList.add('text-amber-400');
+            document.getElementById('btnCancelEditDonation').classList.remove('hidden');
+            
+            const btn = document.getElementById('btnAddDonation');
+            btn.innerHTML = '<i class="fa-solid fa-save mr-2"></i> Cập nhật';
+            btn.classList.add('bg-green-600', 'hover:bg-green-500');
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+        };
+
+        function cancelEditDonation() {
+            editingDonationId = null;
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminAmount').value = '';
+            document.getElementById('adminNote').value = '';
+            
+            document.getElementById('donationFormTitle').innerText = "Thêm khoản đóng góp";
+            document.getElementById('donationFormTitle').classList.remove('text-amber-400');
+            document.getElementById('btnCancelEditDonation').classList.add('hidden');
+            
+            const btn = document.getElementById('btnAddDonation');
+            btn.innerHTML = '<i class="fa-solid fa-plus-circle mr-2"></i> Thêm vào Quỹ';
+            btn.classList.remove('bg-green-600', 'hover:bg-green-500');
+            btn.classList.add('bg-blue-600', 'hover:bg-blue-500');
+        }
+        document.getElementById('btnCancelEditDonation').onclick = cancelEditDonation;
+
+        window.deleteDonation = async (id) => {
+            if(!confirm("Xóa khoản đóng góp này?")) return;
+            if(isOfflineMode) {
+                appData.donations = appData.donations.filter(d => d.id !== id);
+                saveOffline();
+                if(editingDonationId === id) cancelEditDonation();
+            } else {
+                try { 
+                    await deleteDoc(doc(db, "donations", id)); 
+                    if(editingDonationId === id) cancelEditDonation();
+                } catch(e) { alert("Lỗi: " + e.message); }
+            }
+        };
+
+        document.getElementById('btnUpdateTarget').onclick = async () => {
+            const val = parseInt(document.getElementById('adminTarget').value);
+            if(isOfflineMode) {
+                appData.target = val;
+                saveOffline();
+                alert("Đã cập nhật mục tiêu (Offline)!");
+            } else {
+                try {
+                    await setDoc(doc(db, "settings", "general"), { target: val }, { merge: true });
+                    alert("Đã cập nhật mục tiêu!");
+                } catch (e) {
+                     alert("Lỗi quyền Admin: " + e.message);
+                }
+            }
+        };
+
+        document.getElementById('btnAddReward').onclick = async () => {
+            const title = document.getElementById('rewardTitle').value.trim();
+            const sub = document.getElementById('rewardSub').value.trim();
+            const amount = parseInt(document.getElementById('rewardAmount').value);
+            const icon = document.getElementById('rewardIcon').value;
+
+            if (!title || !amount) return alert("Vui lòng nhập tên giải và số tiền!");
+
+            const itemData = { 
+                title, sub, amount,
+                quantity: editingRewardId ? (appData.rewards.find(r => r.id === editingRewardId).quantity || 1) : 1, 
+                icon 
+            };
+
+            if (editingRewardId) {
+                if (isOfflineMode) {
+                     const index = appData.rewards.findIndex(r => r.id === editingRewardId);
+                     if (index !== -1) {
+                         const oldQty = appData.rewards[index].quantity;
+                         appData.rewards[index] = { ...appData.rewards[index], ...itemData, quantity: oldQty };
+                         saveOffline();
+                     }
+                } else {
+                     try { await updateDoc(doc(db, "rewards", editingRewardId), itemData); } 
+                     catch(e) { alert("Lỗi quyền Admin: " + e.message); return; }
+                }
+                alert("Đã cập nhật cấu hình giải!");
+                cancelEditReward(); 
+            } else {
+                if (isOfflineMode) {
+                    appData.rewards.push({ id: Date.now().toString(), ...itemData });
+                    saveOffline();
+                } else {
+                     try { await addDoc(collection(db, "rewards"), itemData); } 
+                     catch (e) { alert("Lỗi quyền Admin: " + e.message); return; }
+                }
+                document.getElementById('rewardTitle').value = '';
+                document.getElementById('rewardSub').value = '';
+                document.getElementById('rewardAmount').value = '';
+                alert("Đã thêm giải mới!");
+            }
+        };
+
+        window.deleteReward = async (id) => {
+            if(!confirm("Bạn có chắc chắn xóa giải thưởng này?")) return;
+            if(isOfflineMode) {
+                appData.rewards = appData.rewards.filter(r => r.id !== id);
+                saveOffline();
+                if (editingRewardId === id) cancelEditReward();
+            } else {
+                try {
+                    await deleteDoc(doc(db, "rewards", id));
+                    if (editingRewardId === id) cancelEditReward();
+                } catch (e) {
+                    alert("Lỗi quyền Admin: " + e.message);
+                }
+            }
+        };
+
+        window.editReward = (id) => {
+            const reward = appData.rewards.find(r => r.id === id);
+            if (!reward) return;
+            editingRewardId = id;
+            document.getElementById('rewardTitle').value = reward.title;
+            document.getElementById('rewardSub').value = reward.sub || '';
+            document.getElementById('rewardAmount').value = reward.amount;
+            document.getElementById('rewardIcon').value = reward.icon;
+            document.getElementById('rewardFormTitle').innerText = `Sửa cấu hình: ${reward.title}`;
+            document.getElementById('rewardFormTitle').classList.add('text-amber-400');
+            const btn = document.getElementById('btnAddReward');
+            btn.innerHTML = '<i class="fa-solid fa-save mr-2"></i> Cập nhật cấu hình';
+            btn.classList.remove('bg-amber-600', 'hover:bg-amber-500');
+            btn.classList.add('bg-green-600', 'hover:bg-green-500');
+            document.getElementById('btnCancelEditReward').classList.remove('hidden');
+        };
+
+        function cancelEditReward() {
+            editingRewardId = null;
+            document.getElementById('rewardTitle').value = '';
+            document.getElementById('rewardSub').value = '';
+            document.getElementById('rewardAmount').value = '';
+            document.getElementById('rewardIcon').value = 'fa-medal';
+            document.getElementById('rewardFormTitle').innerText = 'Định Nghĩa / Thêm Giải Mới';
+            document.getElementById('rewardFormTitle').classList.remove('text-amber-400');
+            const btn = document.getElementById('btnAddReward');
+            btn.innerHTML = '<i class="fa-solid fa-trophy mr-2"></i> Lưu Cấu Hình Giải';
+            btn.classList.add('bg-amber-600', 'hover:bg-amber-500');
+            btn.classList.remove('bg-green-600', 'hover:bg-green-500');
+            document.getElementById('btnCancelEditReward').classList.add('hidden');
+        }
+        document.getElementById('btnCancelEditReward').onclick = cancelEditReward;
+
+        initApp();
+    </script>
+</body>
+</html>
