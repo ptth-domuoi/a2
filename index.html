@@ -48,26 +48,6 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
         }
         
-        /* Modal Transitions */
-        .modal-enter {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-        .modal-exit {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .modal-exit-active {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.2s ease-in, transform 0.2s ease-in;
-        }
-
         /* School Theme Colors Override */
         .bg-school-primary { background-color: #0f172a; }
         .gradient-school {
@@ -107,7 +87,7 @@
 
     <main class="container mx-auto px-4 py-8 space-y-8 max-w-5xl flex-grow">
 
-        <!-- Intro Message (Updated to Yellow/Highlighted) -->
+        <!-- Intro Message -->
         <div class="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-r-xl shadow-md border-y border-r border-yellow-200/50 hover:shadow-lg transition transform hover:-translate-y-0.5">
             <div class="flex items-start">
                 <div class="flex-shrink-0 bg-yellow-200 p-2 rounded-full">
@@ -121,6 +101,38 @@
                 </div>
             </div>
         </div>
+
+        <!-- NEW: PHOTO SLIDER (Gương Mặt Tiêu Biểu) -->
+        <section class="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200 group">
+            <!-- Title Overlay -->
+            <div class="absolute top-0 left-0 w-full p-4 z-20 bg-gradient-to-b from-black/70 to-transparent">
+                <div class="flex items-center text-white">
+                    <i class="fa-solid fa-medal text-yellow-400 text-xl mr-2 animate-bounce"></i>
+                    <h3 class="font-bold text-lg uppercase tracking-wide text-shadow">Vinh Danh Học Kỳ 1</h3>
+                </div>
+            </div>
+
+            <!-- Slider Wrapper -->
+            <div id="imageSlider" class="flex transition-transform duration-700 ease-in-out h-64 md:h-96 w-full">
+                <!-- Images will be injected by JS -->
+            </div>
+
+            <!-- Gradient Bottom -->
+            <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none"></div>
+
+            <!-- Controls -->
+            <button id="prevSlide" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full backdrop-blur-sm transition z-20 opacity-0 group-hover:opacity-100">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="nextSlide" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full backdrop-blur-sm transition z-20 opacity-0 group-hover:opacity-100">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <!-- Indicators -->
+            <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+                <!-- Dots injected by JS -->
+            </div>
+        </section>
         
         <!-- Offline Alert -->
         <div id="offlineAlert" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm animate-fade-in">
@@ -700,6 +712,79 @@
             { id: 'def3', title: "Giải Nhất HSG", sub: "Cấp Tỉnh/TP", amount: 1000000, quantity: 2, icon: "fa-crown", color: "amber" },
             { id: 'def4', title: "Giải KK HSG", sub: "Khuyến khích", amount: 200000, quantity: 5, icon: "fa-award", color: "purple" }
         ];
+
+        // IMAGE SLIDER LOGIC
+        const images = [
+            "https://iyinarhmjghdecfwbfue.supabase.co/storage/v1/object/public/pics/1768904044979_o4s72e89sp.jpg",
+            "https://iyinarhmjghdecfwbfue.supabase.co/storage/v1/object/public/pics/1768904045755_3e75fjg8klt.jpg",
+            "https://iyinarhmjghdecfwbfue.supabase.co/storage/v1/object/public/pics/1768904046211_gt4loouv7mh.jpg",
+            "https://iyinarhmjghdecfwbfue.supabase.co/storage/v1/object/public/pics/1768904046626_yzugo5yvgi.jpg",
+            "https://iyinarhmjghdecfwbfue.supabase.co/storage/v1/object/public/pics/1768904047027_dijayy4siyi.jpg",
+            "https://iyinarhmjghdecfwbfue.supabase.co/storage/v1/object/public/pics/1768904047425_slwm3w5w3ta.jpg"
+        ];
+
+        let currentSlide = 0;
+        const slider = document.getElementById('imageSlider');
+        const dotsContainer = document.getElementById('sliderDots');
+
+        // Initialize Slider
+        function initSlider() {
+            if (!slider) return;
+            
+            // Build Slides
+            slider.innerHTML = images.map(src => `
+                <div class="min-w-full h-full relative">
+                    <img src="${src}" class="w-full h-full object-cover" loading="lazy" alt="Vinh danh học sinh">
+                </div>
+            `).join('');
+
+            // Build Dots
+            dotsContainer.innerHTML = images.map((_, i) => `
+                <button class="w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white transition-all duration-300 ${i === 0 ? 'bg-white scale-125' : ''}" onclick="goToSlide(${i})"></button>
+            `).join('');
+
+            // Auto Play
+            setInterval(nextSlide, 4000);
+        }
+
+        // Slider Functions (Global scope for HTML access)
+        window.goToSlide = (index) => {
+            currentSlide = index;
+            updateSlider();
+        };
+
+        window.nextSlide = () => {
+            currentSlide = (currentSlide + 1) % images.length;
+            updateSlider();
+        };
+
+        window.prevSlide = () => {
+            currentSlide = (currentSlide - 1 + images.length) % images.length;
+            updateSlider();
+        };
+
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            // Update dots
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === currentSlide) {
+                    dots[i].classList.remove('bg-white/50');
+                    dots[i].classList.add('bg-white', 'scale-125');
+                } else {
+                    dots[i].classList.add('bg-white/50');
+                    dots[i].classList.remove('bg-white', 'scale-125');
+                }
+            }
+        }
+
+        // Event Listeners for Slider Arrows
+        document.getElementById('prevSlide').onclick = window.prevSlide;
+        document.getElementById('nextSlide').onclick = window.nextSlide;
+
+        // Start Slider
+        initSlider();
+
 
         // --- Utility Functions ---
         const formatMoney = (amount) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
