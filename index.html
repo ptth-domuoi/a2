@@ -48,6 +48,26 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
         }
         
+        /* Modal Transitions */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+        }
+
         /* School Theme Colors Override */
         .bg-school-primary { background-color: #0f172a; }
         .gradient-school {
@@ -215,6 +235,50 @@
             </div>
         </div>
 
+        <!-- NEW: Full Donation List Modal -->
+        <div id="donationModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300">
+            <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="donationModalContent">
+                <!-- Modal Header -->
+                <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center">
+                            <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2.5 shadow-sm">
+                                <i class="fa-solid fa-list-ul text-sm"></i>
+                            </span>
+                            Danh Sách Đầy Đủ
+                        </h3>
+                        <p class="text-xs text-slate-500 ml-11">Tổng cộng: <span id="modalTotalCount" class="font-bold text-blue-600">0</span> lượt ủng hộ</p>
+                    </div>
+                    <button id="btnCloseDonationModal" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center group">
+                        <i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="overflow-y-auto p-0 flex-grow custom-scrollbar bg-white">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="sticky top-0 bg-white z-10 shadow-sm">
+                            <tr class="text-xs text-slate-400 border-b border-slate-100 font-semibold uppercase tracking-wide bg-slate-50/80 backdrop-blur-sm">
+                                <th class="py-3 pl-6 w-24">Ngày</th>
+                                <th class="py-3">Họ và Tên</th>
+                                <th class="py-3 text-right pr-6 w-32">Số tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullDonationListBody" class="text-sm divide-y divide-slate-50">
+                            <!-- Content injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="p-3 border-t border-slate-100 bg-slate-50/50 text-center">
+                    <p class="text-[10px] text-slate-400 italic flex items-center justify-center">
+                        <i class="fa-regular fa-clock mr-1.5"></i> Danh sách được cập nhật liên tục theo thời gian thực
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- Admin Panel (Secured) -->
         <section id="adminPanel" class="hidden bg-slate-900 text-slate-200 rounded-2xl p-6 shadow-2xl border border-slate-700 animate-fade-in relative overflow-hidden">
             <div class="absolute top-0 right-0 p-3 opacity-10">
@@ -376,22 +440,24 @@
             
             <!-- Left Column: Donors List -->
             <div class="space-y-6">
-                <!-- Latest Donors (Updated Card Style & Added ID for scrolling) -->
-                <section id="section-donations" class="bg-white rounded-2xl shadow-lg border border-slate-300 p-6 h-full flex flex-col relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
+                <!-- Latest Donors (Updated to Card Header/Body) -->
+                <section id="section-donations" class="bg-white rounded-2xl shadow-lg border border-slate-300 h-full flex flex-col relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-600 z-10"></div>
                     
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-bold text-lg text-slate-800 flex items-center">
+                    <!-- Card Header -->
+                    <div class="bg-slate-50 border-b border-slate-200 p-5 pl-7 flex items-center justify-between">
+                         <h3 class="font-bold text-lg text-slate-800 flex items-center">
                             <span class="bg-blue-50 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm border border-blue-100">
                                 <i class="fa-solid fa-heart-circle-plus text-lg"></i>
                             </span>
                             Danh Sách Ủng Hộ
                         </h3>
-                        <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-full uppercase tracking-wider">Mới nhất</span>
+                        <span class="text-[10px] font-bold bg-white text-slate-500 px-3 py-1 rounded-full uppercase tracking-wider border border-slate-100 shadow-sm">Mới nhất</span>
                     </div>
 
-                    <div class="overflow-x-auto flex-grow">
-                        <table class="w-full text-left border-collapse">
+                    <!-- Card Body -->
+                    <div class="p-6 overflow-x-auto flex-grow flex flex-col">
+                        <table class="w-full text-left border-collapse mb-auto">
                             <thead>
                                 <tr class="text-xs text-slate-400 border-b border-slate-100 font-semibold uppercase tracking-wide">
                                     <th class="py-3 pl-2">Ngày</th>
@@ -407,47 +473,50 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    
-                    <!-- NEW: Load More Controls -->
-                    <div id="donationControls" class="mt-4 text-center border-t border-slate-100 pt-4 hidden">
-                        <button id="btnLoadMore" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition py-2 px-6 rounded-full bg-blue-50 hover:bg-blue-100 w-full md:w-auto">
-                            <i class="fa-solid fa-chevron-down mr-2"></i> Xem thêm
-                        </button>
-                        <button id="btnCollapse" class="text-xs font-bold text-slate-500 hover:text-slate-700 transition py-2 px-6 rounded-full bg-slate-100 hover:bg-slate-200 w-full md:w-auto hidden ml-2">
-                            <i class="fa-solid fa-chevron-up mr-2"></i> Thu gọn
-                        </button>
-                    </div>
+                        
+                         <!-- NEW: Load More Controls -->
+                        <div id="donationControls" class="mt-4 text-center border-t border-slate-100 pt-4 hidden">
+                            <button id="btnLoadMore" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition py-2.5 px-6 rounded-full bg-blue-50 hover:bg-blue-100 w-full md:w-auto flex items-center justify-center mx-auto border border-blue-100">
+                                <i class="fa-solid fa-list-ul mr-2"></i> Xem toàn bộ danh sách
+                            </button>
+                        </div>
 
-                    <div id="emptyState" class="hidden text-center py-12 text-slate-300">
-                        <i class="fa-solid fa-box-open text-5xl mb-3 opacity-50"></i>
-                        <p class="text-sm">Chưa có dữ liệu đóng góp nào.</p>
+                        <div id="emptyState" class="hidden text-center py-12 text-slate-300">
+                            <i class="fa-solid fa-box-open text-5xl mb-3 opacity-50"></i>
+                            <p class="text-sm">Chưa có dữ liệu đóng góp nào.</p>
+                        </div>
                     </div>
                 </section>
             </div>
 
             <!-- Right Column: Rewards Structure -->
             <div class="space-y-6">
-                <!-- Rewards Card (Updated Card Style & Added ID for scrolling) -->
-                <section id="section-rewards" class="bg-white rounded-2xl shadow-lg border border-slate-300 p-6 h-full relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
-                    <div class="absolute top-0 right-0 w-1 h-full bg-red-600"></div>
+                <!-- Rewards Card (Updated to Card Header/Body) -->
+                <section id="section-rewards" class="bg-white rounded-2xl shadow-lg border border-slate-300 h-full relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-red-600 z-10"></div>
                     
-                    <h3 class="font-bold text-lg text-slate-800 mb-6 flex items-center">
-                         <span class="bg-red-50 text-red-600 w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm border border-red-100">
-                            <i class="fa-solid fa-award text-lg"></i>
-                        </span>
-                        Cơ Cấu Giải Thưởng
-                    </h3>
-                    
-                    <div id="rewardsContainer" class="space-y-4">
-                        <!-- Rewards will be injected here by JS -->
-                        <div class="text-center py-8 text-slate-400 text-sm">Đang tải danh sách thưởng...</div>
+                    <!-- Card Header -->
+                    <div class="bg-slate-50 border-b border-slate-200 p-5">
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center">
+                             <span class="bg-red-50 text-red-600 w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm border border-red-100">
+                                <i class="fa-solid fa-award text-lg"></i>
+                            </span>
+                            Cơ Cấu Giải Thưởng
+                        </h3>
                     </div>
                     
-                    <div class="mt-6 pt-6 border-t border-slate-200/60">
-                        <p class="text-xs text-center text-slate-400 italic">
-                            * Mức thưởng dự kiến có thể điều chỉnh dựa trên tình hình thực tế.
-                        </p>
+                    <!-- Card Body -->
+                    <div class="p-6">
+                        <div id="rewardsContainer" class="space-y-4">
+                            <!-- Rewards will be injected here by JS -->
+                            <div class="text-center py-8 text-slate-400 text-sm">Đang tải danh sách thưởng...</div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-slate-200/60">
+                            <p class="text-xs text-center text-slate-400 italic">
+                                * Mức thưởng dự kiến có thể điều chỉnh dựa trên tình hình thực tế.
+                            </p>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -606,7 +675,7 @@
         let currentUser = null; // Store user state
         let editingRewardId = null; // Track item being edited
         let editingDonationId = null; // Track donation being edited
-        let visibleDonationsCount = 5; // Default visible items
+        // visibleDonationsCount no longer needed for main view, we always show top 5
 
         // DATA STATE
         let appData = {
@@ -700,13 +769,12 @@
                 motivationalText.className = "text-sm text-blue-300 mt-4 font-medium italic animate-pulse h-6 drop-shadow-sm";
             }
 
-            // 3. Render Donation List (With Load More Logic)
+            // 3. Render Donation List (Main View - Top 5)
             const listContainer = document.getElementById('donationList');
             const emptyState = document.getElementById('emptyState');
             const donationControls = document.getElementById('donationControls');
-            const btnLoadMore = document.getElementById('btnLoadMore');
-            const btnCollapse = document.getElementById('btnCollapse');
-
+            // Remove old load more buttons references if not needed or reuse them
+            
             listContainer.innerHTML = '';
 
             if (appData.donations.length === 0) {
@@ -715,7 +783,8 @@
             } else {
                 emptyState.classList.add('hidden');
                 
-                const itemsToShow = appData.donations.slice(0, visibleDonationsCount);
+                // Show only top 5 recent donations
+                const itemsToShow = appData.donations.slice(0, 5);
                 
                 itemsToShow.forEach(donation => {
                     let adminControls = '';
@@ -744,20 +813,9 @@
                     listContainer.appendChild(row);
                 });
 
+                // Show "See All" button if there are more than 5 donations
                 if (appData.donations.length > 5) {
                     donationControls.classList.remove('hidden');
-                    if (visibleDonationsCount < appData.donations.length) {
-                        const remaining = appData.donations.length - visibleDonationsCount;
-                        btnLoadMore.innerHTML = `<i class="fa-solid fa-chevron-down mr-2"></i> Xem thêm (${remaining})`;
-                        btnLoadMore.classList.remove('hidden');
-                    } else {
-                        btnLoadMore.classList.add('hidden');
-                    }
-                    if (visibleDonationsCount > 5) {
-                        btnCollapse.classList.remove('hidden');
-                    } else {
-                        btnCollapse.classList.add('hidden');
-                    }
                 } else {
                     donationControls.classList.add('hidden');
                 }
@@ -936,17 +994,71 @@
             }
         };
 
-        // UI Listeners for Load More
-        document.getElementById('btnLoadMore').onclick = () => {
-            visibleDonationsCount += 5; // Show 5 more
-            renderApp();
+        // --- MODAL LOGIC (New) ---
+        const donationModal = document.getElementById('donationModal');
+        const donationModalContent = document.getElementById('donationModalContent');
+        const fullDonationListBody = document.getElementById('fullDonationListBody');
+        const modalTotalCount = document.getElementById('modalTotalCount');
+
+        window.openDonationModal = () => {
+            // Populate data
+            fullDonationListBody.innerHTML = '';
+            appData.donations.forEach(donation => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-50 transition border-b border-slate-50 last:border-0";
+                row.innerHTML = `
+                    <td class="py-4 pl-6 text-slate-500 font-mono text-xs whitespace-nowrap">${formatDate(donation.date)}</td>
+                    <td class="py-4">
+                        <div class="font-bold text-slate-700 text-sm">${donation.name}</div>
+                        ${donation.note ? `<div class="text-xs text-slate-400 italic mt-0.5">"${donation.note}"</div>` : ''}
+                    </td>
+                    <td class="py-4 text-right pr-6">
+                        <div class="font-bold text-blue-700 text-sm font-mono">${formatMoney(donation.amount)}</div>
+                    </td>
+                `;
+                fullDonationListBody.appendChild(row);
+            });
+            modalTotalCount.innerText = appData.donations.length;
+
+            // Show Modal
+            donationModal.classList.remove('hidden');
+            // Small delay to allow 'hidden' removal to register before transition
+            setTimeout(() => {
+                donationModal.classList.remove('opacity-0');
+                donationModalContent.classList.remove('scale-95');
+                donationModalContent.classList.add('scale-100');
+            }, 10);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
         };
 
-        document.getElementById('btnCollapse').onclick = () => {
-            visibleDonationsCount = 5; // Reset to default
-            renderApp();
-            document.getElementById('donationList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.closeDonationModal = () => {
+            donationModal.classList.add('opacity-0');
+            donationModalContent.classList.remove('scale-100');
+            donationModalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                donationModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300); // Match transition duration
         };
+
+        // Event Listeners for Modal
+        document.getElementById('btnLoadMore').onclick = () => window.openDonationModal();
+        document.getElementById('btnCloseDonationModal').onclick = () => window.closeDonationModal();
+        
+        // Close on background click
+        donationModal.onclick = (e) => {
+            if (e.target === donationModal) window.closeDonationModal();
+        };
+        
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && !donationModal.classList.contains('hidden')) {
+                window.closeDonationModal();
+            }
+        });
 
         // --- INIT & FIREBASE ---
         async function initApp() {
